@@ -1,20 +1,152 @@
+// import { useState } from "react";
+// import * as pdfjsLib from "pdfjs-dist";
+// import { useDropzone } from "react-dropzone";
+
+// pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+//   "pdfjs-dist/build/pdf.worker.min.js",
+//   import.meta.url
+// ).toString();
+
+// function UploadComponent({ onUpload, onProcessed }) {
+//   const [loading, setLoading] = useState(false);
+
+//   const { getRootProps, getInputProps, isDragActive } = useDropzone({
+//     accept: {
+//       "image/*": [],
+//       "application/pdf": [],
+//     },
+//     multiple: false,
+//     disabled: loading,
+//     onDrop: (files) => handleFile(files[0]),
+//   });
+
+//   const handleFile = async (file) => {
+//     if (!file) return;
+
+//     const meta = {
+//       name: file.name,
+//       size: (file.size / 1024 / 1024).toFixed(2),
+//     };
+
+// // ---------- PDF ----------
+// if (file.type === "application/pdf") {
+//   const reader = new FileReader();
+
+//   reader.onload = async () => {
+//     const typedArray = new Uint8Array(reader.result);
+//     const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
+//     const page = await pdf.getPage(1);
+
+//     const viewport = page.getViewport({ scale: 1.5 });
+//     const canvas = document.createElement("canvas");
+//     const ctx = canvas.getContext("2d");
+
+//     canvas.width = viewport.width;
+//     canvas.height = viewport.height;
+
+//     await page.render({ canvasContext: ctx, viewport }).promise;
+
+//     const firstPageImage = canvas.toDataURL("image/png");
+
+//     // ✅ Before
+//     onUpload(firstPageImage, {
+//       name: file.name,
+//       size: (file.size / 1024 / 1024).toFixed(2),
+//     });
+
+//     // ✅ After = SAME IMAGE (NO BACKEND)
+//     onProcessed(firstPageImage);
+//   };
+
+//   reader.readAsArrayBuffer(file);
+//   return;
+// }
+
+
+//     // ---------- IMAGE ----------
+//     const preview = URL.createObjectURL(file);
+//     onUpload(preview, meta);
+//     await sendToBackend(file);
+//   };
+
+//   const sendToBackend = async (file) => {
+//     try {
+//       setLoading(true);
+//       const formData = new FormData();
+//       formData.append("file", file);
+
+//       const res = await fetch("http://localhost:8000/scan", {
+//         method: "POST",
+//         body: formData,
+//       });
+
+//       const blob = await res.blob();
+//       onProcessed(URL.createObjectURL(blob));
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="space-y-4">
+//       <div
+//         {...getRootProps()}
+//         className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
+//           ${isDragActive ? "border-blue-500 bg-blue-50" : "border-slate-300"}`}
+//       >
+//         <input {...getInputProps()} />
+//         <p className="font-medium">
+//           Drag & drop a file here, or click to select
+//         </p>
+//         <p className="text-xs text-slate-500">
+//           PNG, JPG or PDF (first page only)
+//         </p>
+//       </div>
+
+//       {loading && (
+//         <p className="text-blue-600 font-medium">Processing…</p>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default UploadComponent;
+
+
 import { useState } from "react";
 import * as pdfjsLib from "pdfjs-dist";
+import { useDropzone } from "react-dropzone";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
 ).toString();
 
-function UploadComponent({ onUpload }) {
-  const [before, setBefore] = useState(null);
+function UploadComponent({ onUpload, onProcessed }) {
+  const [loading, setLoading] = useState(false);
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      "image/*": [],
+      "application/pdf": [],
+    },
+    multiple: false,
+    disabled: loading,
+    onDrop: (files) => files[0] && handleFile(files[0]),
+  });
+
+  const handleFile = async (file) => {
     if (!file) return;
 
+    const meta = {
+      name: file.name,
+      size: (file.size / 1024 / 1024).toFixed(2),
+    };
+
+    // ================= PDF (FIRST PAGE ONLY – PREVIEW MODE) =================
     if (file.type === "application/pdf") {
       const reader = new FileReader();
+
       reader.onload = async () => {
         const typedArray = new Uint8Array(reader.result);
         const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
@@ -28,32 +160,73 @@ function UploadComponent({ onUpload }) {
         canvas.height = viewport.height;
 
         await page.render({ canvasContext: ctx, viewport }).promise;
-        const image = canvas.toDataURL();
 
-        setBefore(image);
-        onUpload(image); // send to dashboard
+        const previewImage = canvas.toDataURL("image/png");
+
+        // ✅ Before
+        onUpload(previewImage, meta);
+
+        // ✅ After = SAME IMAGE (NO BACKEND FOR PDF)
+        onProcessed(previewImage);
       };
+
       reader.readAsArrayBuffer(file);
-    } else {
-      const image = URL.createObjectURL(file);
-      setBefore(image);
-      onUpload(image);
+      return;
+    }
+
+    // ================= IMAGE (SEND TO BACKEND) =================
+    setLoading(true);
+
+    const previewUrl = URL.createObjectURL(file);
+    onUpload(previewUrl, meta);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("http://localhost:8000/scan", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Backend failed");
+      }
+
+      const blob = await res.blob();
+      const processedUrl = URL.createObjectURL(blob);
+
+      onProcessed(processedUrl);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to process image");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="space-y-4">
-      <input
-        type="file"
-        accept="image/*,application/pdf"
-        onChange={handleFileChange}
-      />
+      <div
+        {...getRootProps()}
+        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition
+          ${isDragActive ? "border-blue-500 bg-blue-50" : "border-slate-300"}
+          ${loading ? "opacity-50 pointer-events-none" : ""}
+        `}
+      >
+        <input {...getInputProps()} />
+        <p className="font-medium">
+          Drag & drop a file here, or click to select
+        </p>
+        <p className="text-xs text-slate-500">
+          PNG, JPG or PDF (first page only)
+        </p>
+      </div>
 
-      {before && (
-        <div>
-          <h4 className="font-medium mb-2">Before</h4>
-          <img src={before} className="max-w-md border rounded" />
-        </div>
+      {loading && (
+        <p className="text-blue-600 font-medium">
+          Processing document…
+        </p>
       )}
     </div>
   );

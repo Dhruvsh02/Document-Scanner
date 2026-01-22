@@ -1,231 +1,673 @@
-import { useState } from "react";
-import UploadComponent from "./Upload";
+// // import { useEffect, useState } from "react";
+// // import UploadComponent from "./Upload";
+// // import ImageViewer from "./ImageViewer";
 
-import {
-  Upload as UploadIcon,
-  FileText,
-  Grid,
-  LogOut,
-  User,
-  Search,
-  Bell,
-  Settings,
-} from "lucide-react";
+// // import {
+// //   Upload as UploadIcon,
+// //   FileText,
+// //   Grid,
+// //   LogOut,
+// //   User,
+// // } from "lucide-react";
+
+// // function Dashboard() {
+// //   const [activeTab, setActiveTab] = useState("upload");
+// //   const [documents, setDocuments] = useState([]);
+// //   const [current, setCurrent] = useState(null);
+
+// //   const totalDocuments = documents.length; 
+// //   const processedToday = documents.length;
+// //   const storageUsedMB = (documents.length * 2.5).toFixed(1);
+
+// //   useEffect(() => {
+// //     const saved = localStorage.getItem("documents");
+// //     if (saved) setDocuments(JSON.parse(saved));
+// //   }, []);
+
+// //   useEffect(() => {
+// //     localStorage.setItem("documents", JSON.stringify(documents));
+// //   }, [documents]);
+
+
+// //   const handleUpload = (before, fileMeta) => {
+// //     const doc = {
+// //       id: Date.now(),
+// //       before,
+// //       after: null,
+// //       name: fileMeta.name,
+// //       size: (fileMeta.size / 1024 / 1024).toFixed(2),
+// //       createdAt: new Date(),
+// //     };
+
+// //     setDocuments((prev) => [doc, ...prev]);
+// //     setCurrent(doc);
+// //   };
+
+// //   const handleProcessed = (after) => {
+// //     setDocuments((prev) =>
+// //       prev.map((d) =>
+// //         d.id === current?.id ? { ...d, after } : d
+// //       )
+// //     );
+
+// //     setCurrent((prev) =>
+// //       prev ? { ...prev, after } : prev
+// //     );
+// //   };
+
+// //   return (
+// //     <div className="min-h-screen bg-slate-100">
+// //       {/* Header */}
+// //       <header className="bg-white border-b">
+// //         <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+// //           <div className="flex items-center space-x-3">
+// //             <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
+// //               <FileText className="w-5 h-5 text-white" />
+// //             </div>
+// //             <div>
+// //               <h1 className="font-bold">DocScanner Pro</h1>
+// //               <p className="text-xs text-slate-500">Document Processing Platform</p>
+// //             </div>
+// //           </div>
+
+// //           <div className="flex items-center space-x-3">
+// //             <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
+// //               <User className="w-4 h-4" />
+// //             </div>
+// //             <div className="text-sm">
+// //               <p className="font-medium">Guest User</p>
+// //               <p className="text-xs text-slate-500">Local Session</p>
+// //             </div>
+// //           </div>
+// //         </div>
+// //       </header>
+
+// //       {/* Main */}
+// //       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+// //         {/* Stats */}
+// //         <div className="grid md:grid-cols-3 gap-6">
+// //           <StatCard title="Total Documents" value={totalDocuments} />
+// //           <StatCard title="Processed Today" value={processedToday} />
+// //           <StatCard title="Storage Used" value={`${storageUsedMB} MB`} />
+// //         </div>
+
+// //         {/* Tabs */}
+// //         <div className="bg-white rounded-xl border">
+// //           <div className="border-b px-6 flex space-x-6">
+// //             <TabButton active={activeTab === "upload"} onClick={() => setActiveTab("upload")}>
+// //               Upload Document
+// //             </TabButton>
+// //             <TabButton active={activeTab === "gallery"} onClick={() => setActiveTab("gallery")}>
+// //               My Documents
+// //             </TabButton>
+// //           </div>
+
+// //           <div className="p-6 space-y-6">
+// //             {activeTab === "upload" && (
+// //               <>
+// //                 <UploadComponent
+// //                   onUpload={handleUpload}
+// //                   onProcessed={handleProcessed}
+// //                 />
+
+// //                 {current && (
+// //                   <div className="grid md:grid-cols-2 gap-6">
+// //                     <Preview title="Before" src={current.before} />
+
+// //                     <div>
+// //                       <h4 className="font-medium mb-2">After</h4>
+// //                       {current.after ? (
+// //                         <div className="space-y-3">
+// //                           <img src={current.after} alt="Processed" className="border rounded w-full" />
+// //                           <a
+// //                             href={current.after}
+// //                             download={`scanned_${current.name}`}
+// //                             className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+// //                           >
+// //                             Download Processed Image
+// //                           </a>
+// //                         </div>
+// //                       ) : (
+// //                         <div className="border rounded h-64 flex items-center justify-center text-slate-400">
+// //                           Waiting for backend…
+// //                         </div>
+// //                       )}
+// //                     </div>
+// //                   </div>
+// //                 )}
+// //               </>
+// //             )}
+
+// //             {activeTab === "gallery" && (
+// //               <div className="grid md:grid-cols-3 gap-4">
+// //                 {documents.map((doc) => (
+// //                   <div
+// //                     key={doc.id}
+// //                     onClick={() => setCurrent(doc)}
+// //                     className="border rounded cursor-pointer hover:shadow"
+// //                   >
+// //                     <ImageViewer src={current.before} />
+// //                     <ImageViewer src={current.after} />
+// //                     <div className="p-3 text-sm">
+// //                       <p className="font-medium">{doc.name}</p>
+// //                       <p className="text-xs text-slate-500">{doc.size} MB</p>
+// //                     </div>
+// //                   </div>
+// //                 ))}
+// //               </div>
+// //             )}
+// //           </div>
+// //         </div>
+// //       </main>
+// //     </div>
+// //   );
+// // }
+
+// // /* Helpers */
+
+// // function StatCard({ title, value }) {
+// //   return (
+// //     <div className="bg-white border rounded-xl p-6">
+// //       <p className="text-sm text-slate-500">{title}</p>
+// //       <p className="text-3xl font-bold mt-2">{value}</p>
+// //     </div>
+// //   );
+// // }
+
+// // function TabButton({ active, onClick, children }) {
+// //   return (
+// //     <button
+// //       onClick={onClick}
+// //       className={`py-4 border-b-2 text-sm ${
+// //         active ? "border-blue-600 text-blue-600" : "border-transparent text-slate-500"
+// //       }`}
+// //     >
+// //       {children}
+// //     </button>
+// //   );
+// // }
+
+// // function Preview({ title, src }) {
+// //   return (
+// //     <div>
+// //       <h4 className="font-medium mb-2">{title}</h4>
+// //       <img src={src} className="border rounded w-full" />
+// //     </div>
+// //   );
+// // }
+
+// // export default Dashboard;
+
+
+// import { useEffect, useState } from "react";
+// import UploadComponent from "./Upload";
+// import ImageViewer from "./ImageViewer";
+// import Gallery from "./Gallery";
+
+// import { FileText, User } from "lucide-react";
+
+// function Dashboard() {
+//   const [activeTab, setActiveTab] = useState("upload");
+//   const [documents, setDocuments] = useState([]);
+//   const [current, setCurrent] = useState(null);
+
+//   // ---------- Stats ----------
+//   const totalDocuments = documents.length;
+//   const processedToday = documents.length;
+//   const storageUsedMB = (documents.length * 2.5).toFixed(1);
+
+//   // ---------- Load from localStorage ----------
+//   useEffect(() => {
+//     const saved = localStorage.getItem("documents");
+//     if (saved) {
+//       const parsed = JSON.parse(saved);
+//       setDocuments(parsed);
+//       if (parsed.length > 0) setCurrent(parsed[0]);
+//     }
+//   }, []);
+
+//   // ---------- Save to localStorage ----------
+//   useEffect(() => {
+//     localStorage.setItem("documents", JSON.stringify(documents));
+//   }, [documents]);
+
+//   // ---------- Upload handlers ----------
+//   const handleUpload = (before, meta) => {
+//     const doc = {
+//       id: Date.now(),
+//       before,
+//       after: null,
+//       name: meta.name,
+//       size: meta.size, // already in MB
+//       createdAt: new Date().toISOString(),
+//     };
+
+//     setDocuments((prev) => [doc, ...prev]);
+//     setCurrent(doc);
+//   };
+
+//   const handleProcessed = (after) => {
+//     setDocuments((prev) =>
+//       prev.map((d) =>
+//         d.id === current?.id ? { ...d, after } : d
+//       )
+//     );
+
+//     setCurrent((prev) =>
+//       prev ? { ...prev, after } : prev
+//     );
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-slate-100">
+//       {/* ================= HEADER ================= */}
+//       <header className="bg-white border-b">
+//         <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+//           <div className="flex items-center space-x-3">
+//             <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
+//               <FileText className="w-5 h-5 text-white" />
+//             </div>
+//             <div>
+//               <h1 className="font-bold">DocScanner Pro</h1>
+//               <p className="text-xs text-slate-500">
+//                 Document Processing Platform
+//               </p>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center space-x-3">
+//             <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
+//               <User className="w-4 h-4" />
+//             </div>
+//             <div className="text-sm">
+//               <p className="font-medium">Guest User</p>
+//               <p className="text-xs text-slate-500">Local Session</p>
+//             </div>
+//           </div>
+//         </div>
+//       </header>
+
+//       {/* ================= MAIN ================= */}
+//       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+//         {/* ---------- Stats ---------- */}
+//         <div className="grid md:grid-cols-3 gap-6">
+//           <StatCard title="Total Documents" value={totalDocuments} />
+//           <StatCard title="Processed Today" value={processedToday} />
+//           <StatCard title="Storage Used" value={`${storageUsedMB} MB`} />
+//         </div>
+
+//         {/* ---------- Tabs ---------- */}
+//         <div className="bg-white rounded-xl border">
+//           <div className="border-b px-6 flex space-x-6">
+//             <TabButton
+//               active={activeTab === "upload"}
+//               onClick={() => setActiveTab("upload")}
+//             >
+//               Upload Document
+//             </TabButton>
+
+//             <TabButton
+//               active={activeTab === "gallery"}
+//               onClick={() => setActiveTab("gallery")}
+//             >
+//               My Documents
+//             </TabButton>
+//           </div>
+
+//           <div className="p-6 space-y-6">
+//             {/* ================= UPLOAD TAB ================= */}
+//             {activeTab === "upload" && (
+//               <>
+//                 <UploadComponent
+//                   onUpload={handleUpload}
+//                   onProcessed={handleProcessed}
+//                 />
+
+//                 {current && (
+//                   <div className="grid md:grid-cols-2 gap-6">
+//                     {/* BEFORE */}
+//                     <div>
+//                       <h4 className="font-medium mb-2">Before</h4>
+//                       <ImageViewer src={current.before} />
+//                     </div>
+
+//                     {/* AFTER */}
+//                     <div>
+//                       <h4 className="font-medium mb-2">After</h4>
+//                       {current.after ? (
+//                         <div className="space-y-3">
+//                           <ImageViewer src={current.after} />
+//                           <a
+//                             href={current.after}
+//                             download={`scanned_${current.name}`}
+//                             className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+//                           >
+//                             Download Processed Image
+//                           </a>
+//                         </div>
+//                       ) : (
+//                         <div className="border rounded h-64 flex items-center justify-center text-slate-400">
+//                           Waiting for backend…
+//                         </div>
+//                       )}
+//                     </div>
+//                   </div>
+//                 )}
+//               </>
+//             )}
+
+//             {/* ================= GALLERY TAB ================= */}
+//             {activeTab === "gallery" && (
+//               <Gallery
+//                 items={documents}
+//                 onSelect={(doc) => {
+//                   setCurrent(doc);
+//                   setActiveTab("upload");
+//                 }}
+//               />
+//             )}
+//           </div>
+//         </div>
+//       </main>
+//     </div>
+//   );
+// }
+
+// /* ================= HELPERS ================= */
+
+// function StatCard({ title, value }) {
+//   return (
+//     <div className="bg-white border rounded-xl p-6">
+//       <p className="text-sm text-slate-500">{title}</p>
+//       <p className="text-3xl font-bold mt-2">{value}</p>
+//     </div>
+//   );
+// }
+
+// function TabButton({ active, onClick, children }) {
+//   return (
+//     <button
+//       onClick={onClick}
+//       className={`py-4 border-b-2 text-sm ${
+//         active
+//           ? "border-blue-600 text-blue-600"
+//           : "border-transparent text-slate-500"
+//       }`}
+//     >
+//       {children}
+//     </button>
+//   );
+// }
+
+// export default Dashboard;
+
+import { useEffect, useState } from "react";
+import UploadComponent from "./Upload";
+import ImageViewer from "./ImageViewer";
+import Gallery from "./Gallery";
+import ClientCropper from "./ClientCropper";
+import { getCroppedImage } from "./cropImage";
+
+import { FileText, User } from "lucide-react";
+import { useAuth } from "../AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState("upload");
-  const [documents, setDocuments] = useState([]); // all uploads
-  const [current, setCurrent] = useState(null);   // selected upload
+  const [documents, setDocuments] = useState([]);
+  const [current, setCurrent] = useState(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const { user } = useAuth();
 
-  // derived stats (frontend-only, realistic)
+
+  /* ===================== STATS ===================== */
   const totalDocuments = documents.length;
   const processedToday = documents.length;
   const storageUsedMB = (documents.length * 2.5).toFixed(1);
 
-  const logout = () => {
-    console.log("Logout clicked");
-  };
+  /* ===================== LOAD ===================== */
+  useEffect(() => {
+    const saved = localStorage.getItem("documents");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setDocuments(parsed);
+      if (parsed.length > 0) setCurrent(parsed[0]);
+    }
+  }, []);
 
-  const handleUpload = (image) => {
+  /* ===================== SAVE ===================== */
+  useEffect(() => {
+    localStorage.setItem("documents", JSON.stringify(documents));
+  }, [documents]);
+
+  /* ===================== UPLOAD ===================== */
+  const handleUpload = (before, meta) => {
+    const isPdf = meta.name.toLowerCase().endsWith(".pdf");
+
     const doc = {
       id: Date.now(),
-      before: image,
-      createdAt: new Date(),
+      before,
+      after: isPdf ? before : null,
+      name: meta.name,
+      size: meta.size,
+      createdAt: new Date().toISOString(),
+      isPdf,
     };
 
     setDocuments((prev) => [doc, ...prev]);
     setCurrent(doc);
+
+    if (!isPdf) {
+      setShowCropper(true); // image only
+    }
+  };
+
+  /* ===================== CROP CONFIRM ===================== */
+  const handleCropConfirm = async (cropArea) => {
+    if (!current) return;
+
+    const croppedBlob = await getCroppedImage(current.before, cropArea);
+    const croppedUrl = URL.createObjectURL(croppedBlob);
+
+    setDocuments((prev) =>
+      prev.map((d) =>
+        d.id === current.id ? { ...d, before: croppedUrl } : d
+      )
+    );
+
+    setCurrent((prev) =>
+      prev ? { ...prev, before: croppedUrl } : prev
+    );
+
+    setShowCropper(false);
+
+    await sendToBackend(croppedBlob);
+  };
+
+  /* ===================== BACKEND ===================== */
+  const sendToBackend = async (fileBlob) => {
+    const formData = new FormData();
+    formData.append("file", fileBlob);
+
+    const res = await fetch("http://localhost:8000/scan", {
+      method: "POST",
+      body: formData,
+    });
+
+    const blob = await res.blob();
+    const processedUrl = URL.createObjectURL(blob);
+
+    handleProcessed(processedUrl);
+  };
+
+  /* ===================== AFTER ===================== */
+  const handleProcessed = (after) => {
+    setDocuments((prev) =>
+      prev.map((d) =>
+        d.id === current?.id ? { ...d, after } : d
+      )
+    );
+
+    setCurrent((prev) =>
+      prev ? { ...prev, after } : prev
+    );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-slate-900">
-                  DocScanner Pro
-                </h1>
-                <p className="text-xs text-slate-500">
-                  Document Processing Platform
-                </p>
-              </div>
+    <div className="min-h-screen bg-slate-100">
+      {/* ================= HEADER ================= */}
+      <header className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-white" />
             </div>
+            <div>
+              <h1 className="font-bold">DocScanner Pro</h1>
+              <p className="text-xs text-slate-500">
+                Document Processing Platform
+              </p>
+            </div>
+          </div>
 
-            <div className="flex items-center space-x-4">
-              {/* <Search className="w-5 h-5 text-slate-600" />
-              <Bell className="w-5 h-5 text-slate-600" />
-              <Settings className="w-5 h-5 text-slate-600" /> */}
-
-              <div className="flex items-center space-x-3 pl-4 border-l border-slate-200">
-                <div className="w-9 h-9 bg-purple-500 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-medium">Guest User</p>
-                  <p className="text-xs text-slate-500">Local Session</p>
-                </div>
-              </div>
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
+              <User className="w-4 h-4" />
+            </div>
+            <div className="text-sm">
+              <p className="font-medium">{user?.email}</p>
+              <button onClick={() => signOut(auth)}
+               className="text-xs text-red-500 hover:underline">
+                Logout </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <StatCard
-            title="Total Documents"
-            value={totalDocuments}
-            subtitle="Based on uploads"
-            icon={<FileText className="w-6 h-6 text-blue-600" />}
-            iconBg="bg-blue-100"
-          />
-
-          <StatCard
-            title="Processed Today"
-            value={processedToday}
-            subtitle="Today"
-            icon={<UploadIcon className="w-6 h-6 text-green-600" />}
-            iconBg="bg-green-100"
-          />
-
-          <StatCard
-            title="Storage Used"
-            value={`${storageUsedMB} MB`}
-            subtitle="Estimated"
-            icon={<Grid className="w-6 h-6 text-purple-600" />}
-            iconBg="bg-purple-100"
-          />
+      {/* ================= MAIN ================= */}
+      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        {/* ================= STATS ================= */}
+        <div className="grid md:grid-cols-3 gap-6">
+          <StatCard title="Total Documents" value={totalDocuments} />
+          <StatCard title="Processed Today" value={processedToday} />
+          <StatCard title="Storage Used" value={`${storageUsedMB} MB`} />
         </div>
 
-        {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200">
-          <div className="border-b border-slate-200">
-            <nav className="flex space-x-8 px-6">
-              <TabButton
-                active={activeTab === "upload"}
-                onClick={() => setActiveTab("upload")}
-                icon={<UploadIcon className="w-4 h-4" />}
-                label="Upload Document"
-              />
+        {/* ================= TABS ================= */}
+        <div className="bg-white rounded-xl border">
+          <div className="border-b px-6 flex space-x-6">
+            <TabButton
+              active={activeTab === "upload"}
+              onClick={() => setActiveTab("upload")}
+            >
+              Upload Document
+            </TabButton>
 
-              <TabButton
-                active={activeTab === "gallery"}
-                onClick={() => setActiveTab("gallery")}
-                icon={<Grid className="w-4 h-4" />}
-                label="My Documents"
-              />
-            </nav>
+            <TabButton
+              active={activeTab === "gallery"}
+              onClick={() => setActiveTab("gallery")}
+            >
+              My Documents
+            </TabButton>
           </div>
 
-          {/* Content */}
-          <div className="p-6">
+          <div className="p-6 space-y-6">
+            {/* ================= UPLOAD ================= */}
             {activeTab === "upload" && (
-              <div className="space-y-6">
-                <UploadComponent onUpload={handleUpload} />
+              <>
+                <UploadComponent
+                  onUpload={handleUpload}
+                  onProcessed={() => {}}
+                />
 
-                {current && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {showCropper && current && (
+                  <ClientCropper
+                    image={current.before}
+                    onConfirm={handleCropConfirm}
+                    onCancel={() => setShowCropper(false)}
+                  />
+                )}
+
+                {current && !showCropper && (
+                  <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-medium mb-2">Before</h4>
-                      <img
-                        src={current.before}
-                        className="border rounded max-w-full"
-                      />
+                      <ImageViewer src={current.before} />
                     </div>
 
                     <div>
                       <h4 className="font-medium mb-2">After</h4>
-                      <div className="border rounded h-full flex items-center justify-center text-slate-400">
-                        Processed result will appear here
-                      </div>
+
+                      {current.after ? (
+                        <div className="space-y-3">
+                          <ImageViewer src={current.after} />
+                          <a
+                            href={current.after}
+                            download={`scanned_${current.name}`}
+                            className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+                          >
+                            Download Processed Image
+                          </a>
+                        </div>
+                      ) : current.isPdf ? (
+                        <div className="border rounded h-64 flex items-center justify-center text-slate-400">
+                          PDF preview only (first page)
+                        </div>
+                      ) : (
+                        <div className="border rounded h-64 flex items-center justify-center text-slate-400">
+                          Waiting for backend…
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
-              </div>
+              </>
             )}
 
+            {/* ================= GALLERY ================= */}
             {activeTab === "gallery" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {documents.length === 0 && (
-                  <p className="text-slate-500">No uploads yet</p>
-                )}
-
-                {documents.map((doc) => (
-                  <div
-                    key={doc.id}
-                    onClick={() => setCurrent(doc)}
-                    className="border rounded-lg overflow-hidden cursor-pointer hover:shadow"
-                  >
-                    <img
-                      src={doc.before}
-                      className="h-48 w-full object-cover"
-                    />
-                    <div className="p-3 text-sm text-slate-600">
-                      Uploaded just now
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <Gallery
+                items={documents}
+                onSelect={(doc) => {
+                  setCurrent(doc);
+                  setActiveTab("upload");
+                }}
+              />
             )}
           </div>
-        </div>
-
-        {/* Logout */}
-        <div className="flex justify-end mt-6">
-          <button
-            onClick={logout}
-            className="flex items-center space-x-2 px-6 py-2.5 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
         </div>
       </main>
     </div>
   );
 }
 
-/* ---------- Helpers ---------- */
+/* ================= HELPERS ================= */
 
-function StatCard({ title, value, subtitle, icon, iconBg }) {
+function StatCard({ title, value }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-6 flex justify-between">
-      <div>
-        <p className="text-sm text-slate-600">{title}</p>
-        <p className="text-3xl font-bold mt-2">{value}</p>
-        <p className="text-xs text-slate-500 mt-1">{subtitle}</p>
-      </div>
-      <div
-        className={`w-12 h-12 rounded-lg flex items-center justify-center ${iconBg}`}
-      >
-        {icon}
-      </div>
+    <div className="bg-white border rounded-xl p-6">
+      <p className="text-sm text-slate-500">{title}</p>
+      <p className="text-3xl font-bold mt-2">{value}</p>
     </div>
   );
 }
 
-function TabButton({ active, onClick, icon, label }) {
+function TabButton({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`py-4 px-1 border-b-2 text-sm flex items-center space-x-2 ${
+      className={`py-4 border-b-2 text-sm ${
         active
-          ? "border-blue-500 text-blue-600"
-          : "border-transparent text-slate-500 hover:text-slate-700"
+          ? "border-blue-600 text-blue-600"
+          : "border-transparent text-slate-500"
       }`}
     >
-      {icon}
-      <span>{label}</span>
+      {children}
     </button>
   );
 }
 
 export default Dashboard;
+
