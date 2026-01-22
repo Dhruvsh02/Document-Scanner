@@ -3,10 +3,7 @@
 A full-stack document scanning web application inspired by **CamScanner**, built using **React + FastAPI + OpenCV**.
 It allows users to upload images or PDFs, automatically detects the document, applies **perspective correction**, and shows a **before/after preview** with zoom, pan, cropping, and download support.
 
----
-
-## 🚀 Live Demo
-
+## Live Demo
 * **Public App URL (Firebase Hosting):**
   👉 *Add after deployment*
 
@@ -19,7 +16,7 @@ It allows users to upload images or PDFs, automatically detects the document, ap
 
 ---
 
-## 📦 Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -43,11 +40,11 @@ It allows users to upload images or PDFs, automatically detects the document, ap
 
 * pytest (unit tests for image processing logic)
 
-All libraries used are **open-source (OSS compliant)** ✅
+All libraries used are **open-source (OSS compliant)**
 
 ---
 
-## 🧠 Architecture Overview
+## Architecture Overview
 
 ```
 ┌────────────┐        ┌──────────────┐        ┌─────────────┐
@@ -66,7 +63,7 @@ All libraries used are **open-source (OSS compliant)** ✅
 
 ---
 
-## 🔁 Data Flow
+## Data Flow
 
 1. User **registers / logs in**
 2. Protected route allows access to `/dashboard`
@@ -88,7 +85,7 @@ All libraries used are **open-source (OSS compliant)** ✅
 
 ---
 
-## ✂️ Auto-Crop Algorithm (Backend)
+## Auto-Crop Algorithm (Backend)
 
 1. Convert image to grayscale
 2. Apply Gaussian blur
@@ -106,31 +103,31 @@ Fail-safe:
 
 ---
 
-## ✅ Features Implemented
+## Features Implemented
 
 ### Required
 
-* ✅ Email/password authentication
-* ✅ Upload PNG / JPG / PDF
-* ✅ PDF → first page preview
-* ✅ Auto-crop & perspective correction
-* ✅ Before / After comparison
-* ✅ Zoom & pan
-* ✅ Per-user protected routes
-* ✅ Gallery of previous uploads
-* ✅ Download processed image
-* ✅ Error & loading states
+* Email/password authentication
+* Upload PNG / JPG / PDF
+* PDF → first page preview
+* Auto-crop & perspective correction
+* Before / After comparison
+* Zoom & pan
+* Per-user protected routes
+* Gallery of previous uploads
+* Download processed image
+* Error & loading states
 
 ### Bonus / Nice-to-Have
 
-* ✅ Drag & drop upload
-* ✅ Client-side crop preview
-* ✅ Local persistence (localStorage)
-* ✅ Unit tests for image processing
+* Drag & drop upload
+* Client-side crop preview
+* Local persistence (localStorage)
+* Unit tests for image processing
 
 ---
 
-## 🧪 Unit Tests
+## Unit Tests
 
 ### Tested Logic
 
@@ -147,9 +144,9 @@ pytest
 
 ---
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
-### 1️⃣ Backend Setup
+### Backend Setup
 
 ```bash
 cd backend
@@ -167,7 +164,7 @@ http://localhost:8000
 
 ---
 
-### 2️⃣ Frontend Setup
+### Frontend Setup
 
 ```bash
 cd frontend
@@ -183,7 +180,7 @@ http://localhost:5173
 
 ---
 
-### 3️⃣ Firebase Setup
+### Firebase Setup
 
 1. Create Firebase project
 2. Enable **Email/Password Auth**
@@ -200,7 +197,7 @@ firebase deploy
 
 ---
 
-## 🔐 Protected Routes
+## Protected Routes
 
 * `/dashboard` is protected
 * Redirects to `/login` if not authenticated
@@ -208,7 +205,7 @@ firebase deploy
 
 ---
 
-## 🧾 Persistence
+## Persistence
 
 Each upload stores:
 
@@ -223,7 +220,7 @@ Each upload stores:
 
 ---
 
-## ⚠️ Known Trade-offs
+## Known Trade-offs
 
 * PDF backend processing not enabled (frontend-only preview)
 * No cloud storage yet (local URLs)
@@ -232,7 +229,7 @@ Each upload stores:
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
 * Firestore + Firebase Storage integration
 * OCR text extraction
@@ -243,7 +240,7 @@ Each upload stores:
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 document-scanner/
@@ -262,24 +259,11 @@ document-scanner/
 
 ---
 
-## 🧑‍💻 Author
+##  Author
 
 **Dhruv Sharma**
 Full-Stack Developer
-📍 India
+
 
 ---
 
-## ✅ Submission Checklist
-
-* ✅ Public URL
-* ✅ Test credentials
-* ✅ GitHub repo
-* ✅ README (this file)
-* ✅ Unit tests
-* ✅ Auto-crop working
-* ✅ Before/After preview
-
----
-
-If you want, next I can help you **deploy to Firebase Hosting step-by-step** and generate the **final public URL**.
