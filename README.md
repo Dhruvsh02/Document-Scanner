@@ -5,7 +5,9 @@ It allows users to upload images or PDFs, automatically detects the document, ap
 
 ## Live Demo
 * **Public App URL (Firebase Hosting):**
-  👉 *Add after deployment*
+  👉 https://document-scanner-9390b.web.app/
+* **Backend URL (Render):**
+  👉 https://document-scanner-backend-yul7.onrender.com
 
 * **Test Credentials:**
 
